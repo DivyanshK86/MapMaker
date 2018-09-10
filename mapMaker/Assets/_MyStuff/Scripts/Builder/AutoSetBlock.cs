@@ -21,9 +21,9 @@ public class AutoSetBlock : MonoBehaviour {
 
     public void UpdateOthers()
     {
-        BlockMapper otherBlock = new BlockMapper();
-        AutoSetBlock otherAutoSetBlock = new AutoSetBlock();
-        AutoStickWall otherAutoStickWall = new AutoStickWall();
+        BlockMapper otherBlock;
+        AutoSetBlock otherAutoSetBlock;
+        AutoStickWall otherAutoStickWall;
 
         foreach(Vector3 dir in DrawMap.instance.directionList)
         {

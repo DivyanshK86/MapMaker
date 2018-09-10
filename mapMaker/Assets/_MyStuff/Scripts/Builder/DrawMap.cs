@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public class BlockMapper{
@@ -9,15 +11,26 @@ public class BlockMapper{
     public GameObject blockObject;
 }
 
+[System.Serializable]
+public class MapAssets {
+
+    public GameObject prefab;
+    public Sprite icon;
+}
+
 public class DrawMap : MonoBehaviour {
 
     public static DrawMap instance;
 
-    public List<GameObject> mapAssets;
+    public List<MapAssets> mapAssets;
     public List<BlockMapper> blocksMapper;
     [HideInInspector]
     public Vector3[] directionList;
-    public int selectedBlock;
+    public int selectedBlock = 1;
+    public Image drawBlockIcon;
+
+    float framesToSkip = 4;
+    float skippedFrames;
 
     void Awake()
     {
@@ -28,21 +41,25 @@ public class DrawMap : MonoBehaviour {
 
     void Update()
     {
-        if(Input.GetMouseButton(0))
+        if(ModeManager.gameMode == ModeManager.GameMode.editMode)
         {
-            DrawBlocks();
-        }
+            if (EventSystem.current.IsPointerOverGameObject())
+                return;
 
-        if(Input.GetMouseButtonDown(1))
-        {
-            selectedBlock++;
-            if (selectedBlock >= mapAssets.Count)
-                selectedBlock = 0;
-        }
+            if(Input.GetMouseButton(0))
+            {
+                if (skippedFrames > 0)
+                    skippedFrames--;
+                else
+                    DrawBlocks();
+            }
+            else
+                skippedFrames = framesToSkip;
 
-        if(Input.GetMouseButtonDown(0))
-        {
-            RotateWallStickers();
+            if(Input.GetMouseButtonDown(0))
+            {
+                RotateWallStickers();
+            }
         }
     }
 
@@ -52,10 +69,10 @@ public class DrawMap : MonoBehaviour {
         Vector3 snappedTouchPoint = GetSnappedTouchPoint(touchpoint);
         BlockMapper block = CheckListForPosition(snappedTouchPoint);
 
-        if(mapAssets[selectedBlock] == null && block != null)
+        if(mapAssets[selectedBlock].prefab == null && block != null)
             Destroy(block.blockObject);
-        else if (block == null && mapAssets[selectedBlock] != null)
-            Instantiate(mapAssets[selectedBlock], snappedTouchPoint, Quaternion.identity);
+        else if (block == null && mapAssets[selectedBlock].prefab != null)
+            Instantiate(mapAssets[selectedBlock].prefab, snappedTouchPoint, Quaternion.identity);
     }
 
     void RotateWallStickers()
@@ -64,9 +81,9 @@ public class DrawMap : MonoBehaviour {
         Vector3 snappedTouchPoint = GetSnappedTouchPoint(touchpoint);
         BlockMapper block = CheckListForPosition(snappedTouchPoint);
 
-        if(block != null && mapAssets[selectedBlock] != null)
+        if(block != null && mapAssets[selectedBlock].prefab != null)
         {
-            if(block.blockObject.GetComponent<BlockTypeManager>().blockType == mapAssets[selectedBlock].GetComponent<BlockTypeManager>().blockType)
+            if(block.blockObject.GetComponent<BlockTypeManager>().blockType == mapAssets[selectedBlock].prefab.GetComponent<BlockTypeManager>().blockType)
             {
                 AutoStickWall autoStickWall = block.blockObject.GetComponent<AutoStickWall>();
                 if (autoStickWall != null)
@@ -100,5 +117,13 @@ public class DrawMap : MonoBehaviour {
         directionList[1] = Vector3.right;
         directionList[2] = Vector3.down;
         directionList[3] = Vector3.left;
+    }
+
+    public void _ChangeDrawBlock()
+    {
+        selectedBlock++;
+        if (selectedBlock >= mapAssets.Count)
+            selectedBlock = 0;
+        drawBlockIcon.sprite = mapAssets[selectedBlock].icon;
     }
 }

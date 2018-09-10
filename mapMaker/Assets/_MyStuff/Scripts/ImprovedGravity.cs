@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CnControls;
 
 public class ImprovedGravity : MonoBehaviour {
 
@@ -41,14 +42,14 @@ public class ImprovedGravity : MonoBehaviour {
 
     void JumpInput()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if(CnInputManager.GetButtonDown("JumpBtn") && isGrounded)
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
 
-        if(Input.GetKey(KeyCode.Space) && isJumping)
+        if(CnInputManager.GetButton("JumpBtn") && isJumping)
         {
             if (jumpTimeCounter > 0)
             {
@@ -59,7 +60,7 @@ public class ImprovedGravity : MonoBehaviour {
                 isJumping = false;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (CnInputManager.GetButtonUp("JumpBtn"))
             isJumping = false;
     }
 }

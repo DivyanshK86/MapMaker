@@ -19,7 +19,7 @@ public class AutoStickWall : MonoBehaviour {
     {
         allAngles = new List<float>();
         BlockMapper block = new BlockMapper();
-        BlockTypeManager blockTypeManager = new BlockTypeManager();
+        BlockTypeManager blockTypeManager;
 
         for(int i=0; i<DrawMap.instance.directionList.Length; i++)
         {

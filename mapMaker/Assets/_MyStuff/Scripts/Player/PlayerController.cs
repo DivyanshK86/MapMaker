@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CnControls;
 
 public class PlayerController : MonoBehaviour {
 
@@ -51,12 +52,16 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
-        rightArrow = Input.GetKey(KeyCode.RightArrow);
+/*        rightArrow = Input.GetKey(KeyCode.RightArrow);
         leftArrow = Input.GetKey(KeyCode.LeftArrow);
-        blocking = Input.GetKey(KeyCode.Z);
+        blocking = Input.GetKey(KeyCode.Z);*/
+
+        rightArrow = CnInputManager.GetButton("RightArrow");
+        leftArrow = CnInputManager.GetButton("LeftArrow");
+        blocking = CnInputManager.GetButton("BlockBtn");
 
 
-        if(Input.GetKeyDown(KeyCode.X))
+        if(CnInputManager.GetButtonDown("AttackBtn"))
         {
             animator.SetTrigger("attack");
         }
