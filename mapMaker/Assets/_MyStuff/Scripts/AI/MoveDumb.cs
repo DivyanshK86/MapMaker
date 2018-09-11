@@ -26,7 +26,7 @@ public class MoveDumb : MonoBehaviour {
     void Update()
     {
         RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, Vector2.right * moveDir, 0.4f, hitSwitchDirection);
-
+        Debug.DrawRay(transform.position, Vector2.right * moveDir * 0.4f);
         rb.velocity = new Vector2(moveSpeed * moveDir, rb.velocity.y);
 
         if (hit)

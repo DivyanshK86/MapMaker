@@ -11,6 +11,7 @@ public class ModeManager : MonoBehaviour {
 
     public Sprite[] icons;
     public Image gameModeIcon;
+    public Image playModeImage;
 
     public GameObject PlayModePanel;
     public GameObject EditAndViewModePanel;
@@ -21,33 +22,58 @@ public class ModeManager : MonoBehaviour {
     {
         if (gameMode == GameMode.editMode)
         {
-            gameMode = GameMode.viewMode;
-            PlayModePanel.SetActive(false);
-            EditAndViewModePanel.SetActive(true);
-
-            foreach (Button btn in viewModeButtons)
-                btn.interactable = true;
-            foreach (Button btn in editModeButtons)
-                btn.interactable = false;
+            viewMode();
         }
         else if(gameMode == GameMode.viewMode)
         {
-            gameMode = GameMode.playMode;
-            PlayModePanel.SetActive(true);
-            EditAndViewModePanel.SetActive(false);
-        }
-        else if(gameMode == GameMode.playMode)
-        {
-            gameMode = GameMode.editMode;
-            PlayModePanel.SetActive(false);
-            EditAndViewModePanel.SetActive(true);
-
-            foreach (Button btn in viewModeButtons)
-                btn.interactable = false;
-            foreach (Button btn in editModeButtons)
-                btn.interactable = true;
+            editMode();
         }
 
         gameModeIcon.sprite = icons[(int)gameMode];
+    }
+
+    public void _TogglePlayMode()
+    {
+        if (gameMode != GameMode.playMode)
+        {
+            playMode();
+            playModeImage.color = Color.green;
+            EditAndViewModePanel.SetActive(false);
+        }
+        else
+        {
+            viewMode();
+            playModeImage.color = Color.white;
+            EditAndViewModePanel.SetActive(true);
+            gameModeIcon.sprite = icons[(int)gameMode];
+        }
+    }
+
+    void editMode()
+    {
+        gameMode = GameMode.editMode;
+        PlayModePanel.SetActive(false);
+
+        foreach (Button btn in viewModeButtons)
+            btn.interactable = false;
+        foreach (Button btn in editModeButtons)
+            btn.interactable = true;
+    }
+
+    void viewMode()
+    {
+        gameMode = GameMode.viewMode;
+        PlayModePanel.SetActive(false);
+
+        foreach (Button btn in viewModeButtons)
+            btn.interactable = true;
+        foreach (Button btn in editModeButtons)
+            btn.interactable = false;
+    }
+
+    void playMode()
+    {
+        gameMode = GameMode.playMode;
+        PlayModePanel.SetActive(true);
     }
 }
