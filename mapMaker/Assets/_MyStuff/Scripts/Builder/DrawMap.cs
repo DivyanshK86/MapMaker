@@ -65,8 +65,8 @@ public class DrawMap : MonoBehaviour {
 
     void DrawBlocks()
     {
-        Vector3 touchpoint = GetTouchPoint();
-        Vector3 snappedTouchPoint = GetSnappedTouchPoint(touchpoint);
+        Vector3 touchpoint = CommonMethods.GetTouchPoint();
+        Vector3 snappedTouchPoint = CommonMethods.GetSnappedPoint(touchpoint);
         BlockMapper block = CheckListForPosition(snappedTouchPoint);
 
         if(mapAssets[selectedBlock].prefab == null && block != null)
@@ -77,8 +77,8 @@ public class DrawMap : MonoBehaviour {
 
     void RotateWallStickers()
     {
-        Vector3 touchpoint = GetTouchPoint();
-        Vector3 snappedTouchPoint = GetSnappedTouchPoint(touchpoint);
+        Vector3 touchpoint = CommonMethods.GetTouchPoint();
+        Vector3 snappedTouchPoint = CommonMethods.GetSnappedPoint(touchpoint);
         BlockMapper block = CheckListForPosition(snappedTouchPoint);
 
         if(block != null && mapAssets[selectedBlock].prefab != null)
@@ -92,7 +92,7 @@ public class DrawMap : MonoBehaviour {
         }
     }
 
-    Vector3 GetTouchPoint()
+/*    Vector3 GetTouchPoint()
     {
         Vector3 touchPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         touchPoint.z = 0;
@@ -102,7 +102,7 @@ public class DrawMap : MonoBehaviour {
     Vector3 GetSnappedTouchPoint(Vector3 pos)
     {
         return new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), 0);
-    }
+    }*/
 
     public BlockMapper CheckListForPosition(Vector3 position)
     {
