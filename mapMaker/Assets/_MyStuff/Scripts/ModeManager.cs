@@ -50,7 +50,7 @@ public class ModeManager : MonoBehaviour {
     {
         gameMode = GameMode.editMode;
         PlayModePanel.SetActive(false);
-        //editGrid.SetActive(true);
+        editGrid.SetActive(true);
         foreach (Button btn in editModeButtons)
             btn.interactable = true;
 
@@ -61,7 +61,7 @@ public class ModeManager : MonoBehaviour {
     {
         gameMode = GameMode.viewMode;
         PlayModePanel.SetActive(false);
-        //editGrid.SetActive(false);
+        editGrid.SetActive(false);
 
         foreach (Button btn in viewModeButtons)
             btn.interactable = true;
@@ -80,7 +80,7 @@ public class ModeManager : MonoBehaviour {
         PlayModePanel.SetActive(true);
         playModeImage.color = Color.green;
         EditAndViewModePanel.SetActive(false);
-        //editGrid.SetActive(false);
+        editGrid.SetActive(false);
     }
 
     void SetAccordingToMode(GameMode mode)
@@ -137,5 +137,10 @@ public class ModeManager : MonoBehaviour {
     {
         buttonReference.refBlockList.Clear();
         buttonReference.UpdateReferenceLines();
+    }
+
+    public void _ToggleLights()
+    {
+        Camera.main.GetComponent<SFRenderer>().enabled = !Camera.main.GetComponent<SFRenderer>().enabled;
     }
 }
