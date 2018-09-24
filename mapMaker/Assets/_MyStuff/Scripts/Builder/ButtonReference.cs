@@ -59,7 +59,7 @@ public class ButtonReference : MonoBehaviour {
         }
     }
 
-    void UpdateReferenceLines()
+    public void UpdateReferenceLines()
     {
         foreach(Transform child in refLinesHolder)
         {

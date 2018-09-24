@@ -23,6 +23,7 @@ public class ModeManager : MonoBehaviour {
     public Button[] editModeButtons;
     public Button[] buttonModeButtons;
 
+    public GameObject buttonModeOptions;
 
     void Awake()
     {
@@ -32,17 +33,17 @@ public class ModeManager : MonoBehaviour {
     public void _ChangeGameMode()
     {
         if (gameMode == GameMode.editMode)
-            viewMode();
+            SetAccordingToMode(GameMode.viewMode);
         else if(gameMode == GameMode.viewMode)
-            editMode();
+            SetAccordingToMode(GameMode.editMode);
     }
 
     public void _TogglePlayMode()
     {
         if (gameMode != GameMode.playMode)
-            playMode();
+            SetAccordingToMode(GameMode.playMode);
         else
-            viewMode();
+            SetAccordingToMode(GameMode.viewMode);
     }
 
     void editMode()
@@ -50,9 +51,6 @@ public class ModeManager : MonoBehaviour {
         gameMode = GameMode.editMode;
         PlayModePanel.SetActive(false);
         //editGrid.SetActive(true);
-
-        foreach (Button btn in viewModeButtons)
-            btn.interactable = false;
         foreach (Button btn in editModeButtons)
             btn.interactable = true;
 
@@ -67,8 +65,6 @@ public class ModeManager : MonoBehaviour {
 
         foreach (Button btn in viewModeButtons)
             btn.interactable = true;
-        foreach (Button btn in editModeButtons)
-            btn.interactable = false;
 
         playModeImage.color = Color.white;
         EditAndViewModePanel.SetActive(true);
@@ -77,6 +73,9 @@ public class ModeManager : MonoBehaviour {
 
     void playMode()
     {
+        foreach (Button btn in playModeButtons)
+            btn.interactable = true;
+        
         gameMode = GameMode.playMode;
         PlayModePanel.SetActive(true);
         playModeImage.color = Color.green;
@@ -86,6 +85,15 @@ public class ModeManager : MonoBehaviour {
 
     void SetAccordingToMode(GameMode mode)
     {
+        foreach (Button btn in viewModeButtons)
+            btn.interactable = false;
+        foreach (Button btn in editModeButtons)
+            btn.interactable = false;
+        foreach (Button btn in playModeButtons)
+            btn.interactable = false;
+        foreach (Button btn in buttonModeButtons)
+            btn.interactable = false;
+
         switch (mode)
         {
             case GameMode.editMode:
@@ -104,14 +112,15 @@ public class ModeManager : MonoBehaviour {
 
     [HideInInspector]
     public ButtonReference buttonReference = null;
-    public void SetButtonReferenceMode(bool state, ButtonReference btnRef = null)
+    public void SetButtonReferenceMode(bool state)
     {
         if(state)
         {
             previousMode = gameMode;
             gameMode = GameMode.buttonMode;
-            buttonReference = btnRef;
-
+            SetAccordingToMode(GameMode.buttonMode);
+            foreach (Button btn in buttonModeButtons)
+                btn.interactable = true;
         }
         else
         {
@@ -121,5 +130,12 @@ public class ModeManager : MonoBehaviour {
 
         buttonReference.drawingEnabled = state;
         buttonReference.refLinesHolder.gameObject.SetActive(state);
+        buttonModeOptions.SetActive(state);
+    }
+
+    public void _DeleteNodes()
+    {
+        buttonReference.refBlockList.Clear();
+        buttonReference.UpdateReferenceLines();
     }
 }

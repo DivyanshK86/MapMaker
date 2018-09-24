@@ -65,9 +65,13 @@ public class DrawMap : MonoBehaviour {
             Destroy(block.blockObject);
         else if (block == null && mapAssets[selectedBlock].prefab != null)
             Instantiate(mapAssets[selectedBlock].prefab, snappedTouchPoint, Quaternion.identity);
-        else if(block.blockObject.GetComponent<ButtonReference>() != null)
+        else if(block != null)
         {
-            ModeManager.insatance.SetButtonReferenceMode(true, block.blockObject.GetComponent<ButtonReference>());
+            if(block.blockObject.GetComponent<ButtonReference>() != null)
+            {
+                ModeManager.insatance.buttonReference = block.blockObject.GetComponent<ButtonReference>();
+                ModeManager.insatance.SetButtonReferenceMode(true);
+            }
         }
             
     }
