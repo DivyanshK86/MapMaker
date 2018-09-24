@@ -27,6 +27,11 @@ public class CameraFollowScript : MonoBehaviour {
 
                 transform.position = Vector3.Lerp(transform.position, new Vector3(target.position.x, target.position.y, transform.position.z), followSpeed * Time.deltaTime);
             }
+            else if (ModeManager.gameMode == ModeManager.GameMode.buttonMode)
+            {
+                Vector3 newTarget = ModeManager.insatance.buttonReference.refLinesHolder.position;
+                transform.position = Vector3.Lerp(transform.position, new Vector3(newTarget.x, newTarget.y, transform.position.z), followSpeed * Time.deltaTime);
+            }
             else if(!lerpedTo_lastEditPosition)
             {
                 transform.position = Vector3.Lerp(transform.position, new Vector3(lastEditPosition.x, lastEditPosition.y, transform.position.z), followSpeed * Time.deltaTime);

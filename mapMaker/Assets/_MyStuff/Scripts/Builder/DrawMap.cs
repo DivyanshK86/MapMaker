@@ -29,9 +29,6 @@ public class DrawMap : MonoBehaviour {
     public int selectedBlock = 1;
     public Image drawBlockIcon;
 
-    float framesToSkip = 4;
-    float skippedFrames;
-
     void Awake()
     {
         PopulateDirectionList();
@@ -48,13 +45,8 @@ public class DrawMap : MonoBehaviour {
 
             if(Input.GetMouseButton(0))
             {
-                if (skippedFrames > 0)
-                    skippedFrames--;
-                else
-                    DrawBlocks();
+                DrawBlocks();
             }
-            else
-                skippedFrames = framesToSkip;
 
             if(Input.GetMouseButtonDown(0))
             {
@@ -73,6 +65,11 @@ public class DrawMap : MonoBehaviour {
             Destroy(block.blockObject);
         else if (block == null && mapAssets[selectedBlock].prefab != null)
             Instantiate(mapAssets[selectedBlock].prefab, snappedTouchPoint, Quaternion.identity);
+        else if(block.blockObject.GetComponent<ButtonReference>() != null)
+        {
+            ModeManager.insatance.SetButtonReferenceMode(true, block.blockObject.GetComponent<ButtonReference>());
+        }
+            
     }
 
     void RotateWallStickers()
