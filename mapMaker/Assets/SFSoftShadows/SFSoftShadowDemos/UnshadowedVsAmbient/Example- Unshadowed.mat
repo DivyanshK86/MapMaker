@@ -8,70 +8,35 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Example- Unshadowed
   m_Shader: {fileID: 4800000, guid: a8916a95a993b4c66a0777e7fe38612d, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 5
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
+  disabledShaderPasses: []
   m_SavedProperties:
-    serializedVersion: 2
+    serializedVersion: 3
     m_TexEnvs:
-      data:
-        first:
-          name: _MainTex
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _LightMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
+    - _LightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
-      data:
-        first:
-          name: PixelSnap
-        second: 0
-      data:
-        first:
-          name: _SoftHardMix
-        second: 0
-      data:
-        first:
-          name: _InvFade
-        second: 1
-      data:
-        first:
-          name: LineSample
-        second: 1
-      data:
-        first:
-          name: _AmbientOnlyMix
-        second: 0
-      data:
-        first:
-          name: FixedSamplePoint
-        second: 1
-      data:
-        first:
-          name: FIXEDSAMPLEPOINT
-        second: 0
-      data:
-        first:
-          name: LINESAMPLE
-        second: 0
+    - FIXEDSAMPLEPOINT: 0
+    - FixedSamplePoint: 1
+    - LINESAMPLE: 0
+    - LineSample: 1
+    - PixelSnap: 0
+    - _AmbientOnlyMix: 0
+    - _InvFade: 1
+    - _SoftHardMix: 0
     m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 1, g: 1, b: 1, a: 1}
-      data:
-        first:
-          name: _Glow
-        second: {r: 0, g: 0, b: 0, a: 0}
-      data:
-        first:
-          name: _TintColor
-        second: {r: .5, g: .5, b: .5, a: .5}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Glow: {r: 0, g: 0, b: 0, a: 0}
+    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+    - _TintColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}

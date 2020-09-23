@@ -31,9 +31,11 @@
 				}
 
 				fixed4 FShader(VertexOutput v) : SV_Target {
+					// Prevent back projection of lights in perspective mode.
 					half mask = step(0.0, v.texCoord.w);
-					half intensity = tex2Dproj(_MainTex, UNITY_PROJ_COORD(v.texCoord)).a;
-					return half4(v.color.rgb*mask*intensity, 1.0);
+
+					half3 intensity = tex2Dproj(_MainTex, UNITY_PROJ_COORD(v.texCoord)).rgb;
+					return half4(mask*intensity*v.color.rgb, 1.0);
 				}
 			ENDCG
 		}

@@ -1,5 +1,4 @@
 ﻿Shader "Sprites/SFSoftShadow" {
-
 	Properties {
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 		_Tint ("Tint and Transparency", Color) = (1.0, 1.0, 1.0, 1.0)
@@ -65,7 +64,7 @@
 				};
 				
 				VertexOutput VShader(VertexInput v){
-					float4 position = mul(UNITY_MATRIX_MVP, float4(v.position, 1.0));
+					float4 position = UnityObjectToClipPos(float4(v.position, 1.0));
 
 					float3 samplePosition = v.position;
 #if defined(LINESAMPLE_ON)
@@ -78,7 +77,7 @@
 
 					// Unity applies some magic to the projection matrix on some platforms.
 					// Since we are using the projection for texCoords, need to ensure it has no magic by passing our own projection matrix.
-					float4 lightmapCoord = mul(_SFProjection, mul(UNITY_MATRIX_MV, float4(samplePosition, 1.0)));
+					float4 lightmapCoord = mul(_SFProjection, mul(UNITY_MATRIX_V, mul(unity_ObjectToWorld, float4(samplePosition, 1.0))));
 
 #if defined(PIXELSNAP_ON)
 					position = UnityPixelSnap(position);

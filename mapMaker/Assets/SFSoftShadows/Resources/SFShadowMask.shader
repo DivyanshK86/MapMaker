@@ -36,14 +36,17 @@
 				void VShader(VertexInput IN, out FragmentInput OUT){
 					// Unpack input.
 					float radius = IN.properties[0];
-					OUT.opacity = IN.properties[2];
 					float lightPenetration = IN.properties[1];
+
+					// Woraround for a Unity shader compiler bug. Weee?
+					// Direct assignemnt leads to garbage in the frag shader.
+					OUT.opacity = 1.00001*IN.properties[2];
 
 					float2 segmentA = IN.segmentData.xy;
 					float2 segmentB = IN.segmentData.zw;
 
 					// Determinant of the light matrix to check if it's flipped at all.
-					float flip = sign(unity_ObjectToWorld._m00*unity_ObjectToWorld._m11 - unity_ObjectToWorld._m01*unity_ObjectToWorld._m10);
+					float flip = sign(UNITY_MATRIX_M._m00*UNITY_MATRIX_M._m11 - UNITY_MATRIX_M._m01*UNITY_MATRIX_M._m10);
 
 					// Vertex projection.
 					float2 lightOffsetA = flip*float2(-radius,  radius)*normalize(segmentA).yx;
@@ -52,7 +55,7 @@
 					float2 segmentPosition = lerp(segmentA, segmentB, IN.occluderCoord.x);
 					float2 projectionOffset = lerp(lightOffsetA, lightOffsetB, IN.occluderCoord.x);
 					float4 projected = float4(segmentPosition - projectionOffset*IN.occluderCoord.y, 0.0, 1.0 - IN.occluderCoord.y);
-					float4 clipPosition = mul(UNITY_MATRIX_MVP, projected);
+					float4 clipPosition = mul(UNITY_MATRIX_VP, mul(UNITY_MATRIX_M, projected));
 					OUT.position = clipPosition;
 
 					// Penumbras.

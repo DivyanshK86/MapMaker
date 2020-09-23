@@ -148,6 +148,19 @@ public class SFRenderer : MonoBehaviour {
 		}
 	}
 
+	private Mesh _mesh;
+	private Mesh sharedMesh {
+		get {
+			if(_mesh == null){
+				_mesh = new Mesh();
+				_mesh.MarkDynamic();
+				_mesh.hideFlags = HideFlags.HideAndDontSave;
+			}
+
+			return _mesh;
+		}
+	}
+
 	private bool UV_STARTS_AT_TOP;
 	private static Matrix4x4 TEXTURE_FLIP_MATRIX = Matrix4x4.Scale(new Vector3(1.0f, -1.0f, 1.0f));
 
@@ -183,6 +196,10 @@ public class SFRenderer : MonoBehaviour {
 			lightmapFormat + ", " + 
 			lightmapFormatHDR
 		);
+	}
+
+	private void OnDestroy(){
+		if(_mesh) DestroyImmediate(_mesh);
 	}
 
 	public static Rect _TransformRect(Matrix4x4 m, Rect r){
@@ -284,8 +301,10 @@ public class SFRenderer : MonoBehaviour {
 			// Draw shadow mask
 			if(polys != null && light._shadowLayers != 0){
 				CullPolys(polys, light._CalcCullBounds(vpMatrix), _perLightCulledPolygons);
-				var mesh = light._BuildShadowMesh(_perLightCulledPolygons, _minLightPenetration);
+				UnityEngine.Profiling.Profiler.BeginSample("SFSS-BuildShadowMesh");
+				var mesh = light._BuildShadowMesh(this.sharedMesh, _perLightCulledPolygons, _minLightPenetration);
 				_perLightCulledPolygons.Clear();
+				UnityEngine.Profiling.Profiler.EndSample();
 
 				if(mesh != null){
 					// Note: DrawMesh apparently not affected by the "GL" transform.
@@ -293,6 +312,9 @@ public class SFRenderer : MonoBehaviour {
 					Graphics.DrawMeshNow(mesh, light._ModelMatrix(true));
 					mesh.Clear();
 				}
+				
+				// Clamp the shadow mask to 0 when rendering to a floating point HDR lightmap.
+				if(cam.allowHDR) Graphics.DrawTexture(CLIP_RECT, Texture2D.blackTexture, this.HDRClampMaterial);
 			}
 
 			// Can't use '??' operator because of Unity magic.
@@ -301,9 +323,6 @@ public class SFRenderer : MonoBehaviour {
 
 			var material = this.lightMaterial;
 			if(_linearLightBlending) material.SetFloat("_intensity", light._intensity);
-
-			// Clamp the shadow mask to 0 when rendering to a floating point HDR lightmap.
-			if(cam.hdr) Graphics.DrawTexture(CLIP_RECT, Texture2D.blackTexture, this.HDRClampMaterial);
 
 			// Composite the light by drawing a fullscreen, (but scissored) quad with the light's cookie texture projected onto it.
 			// Abuse the projection matrix for this since there isn't really a better way to pass the texture's transform.
@@ -314,7 +333,7 @@ public class SFRenderer : MonoBehaviour {
 
 	private RenderTexture GetTexture(Camera cam, Matrix4x4 extensionInv, float downscale){
 		var size = extensionInv*cam.pixelRect.size/downscale;
-		var format = (cam.hdr ? lightmapFormatHDR : lightmapFormat);
+		var format = (cam.allowHDR ? lightmapFormatHDR : lightmapFormat);
 		return RenderTexture.GetTemporary((int)size.x, (int)size.y, 0, format);
 	}
 	
@@ -390,16 +409,20 @@ public class SFRenderer : MonoBehaviour {
 
 		GL.PushMatrix();
 
+		UnityEngine.Profiling.Profiler.BeginSample("SFSS-RenderLightMap " + _culledLights.Count + " lights");
 		_lightMap = GetTexture(cam, extensionInv, _lightMapScale);
 		RenderLightMap(cam, extensionMatrix, _lightMap, _culledLights, null, ambientLight);
+		UnityEngine.Profiling.Profiler.EndSample();
 		
 		if(_shadows){
+			UnityEngine.Profiling.Profiler.BeginSample("SFSS-RenderShadowMap");
 			for(int i = 0; i < polys.Count; i++) polys[i]._CacheWorldBounds();
 			CullPolys(polys, polyCullBounds, _culledPolygons);
 
 			_ShadowMap = GetTexture(cam, extensionInv, _shadowMapScale);
 			RenderLightMap(cam, extensionMatrix, _ShadowMap, _culledLights, _culledPolygons, ambientLight);
 			_culledPolygons.Clear();
+			UnityEngine.Profiling.Profiler.EndSample();
 		}
 		GL.PopMatrix();
 		

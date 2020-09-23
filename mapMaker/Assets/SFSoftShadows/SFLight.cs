@@ -37,11 +37,6 @@ public class SFLight : MonoBehaviour {
 	private void OnEnable(){_lights.Add(this);}
 	private void OnDisable(){_lights.Remove(this);}
 
-	private Mesh _mesh;
-	private void OnDestroy(){
-		if(_mesh) DestroyImmediate(_mesh);
-	}
-
 	public Rect _bounds{ get{return _rt.rect;}}
 
 	public Matrix4x4 _ModelMatrix(bool forceProjection){
@@ -137,9 +132,12 @@ public class SFLight : MonoBehaviour {
 		return vertexArrays[i];
 	}
 
-    public Mesh _BuildShadowMesh(List<SFPolygon> polys, float minLightPenetration){
+	public Mesh _BuildShadowMesh(Mesh mesh, List<SFPolygon> polys, float minLightPenetration){
 		var segments = 0;
 		for(int i = 0; i < polys.Count; i++){
+			if( (polys[i].shadowLayers & this.shadowLayers) == 0){
+				continue;
+			}
 			var poly = polys[i];
 			segments += poly.verts.Length - (poly.looped ? 0 : 1);
 		}
@@ -209,21 +207,15 @@ public class SFLight : MonoBehaviour {
 			arr.tris[i] = 0;
 		}
 
-		if(_mesh == null){
-			_mesh = new Mesh();
-			_mesh.MarkDynamic();
-			_mesh.hideFlags = HideFlags.HideAndDontSave;
-		}
-
-		_mesh.vertices = verts;
-		_mesh.tangents = tangents;
-		_mesh.uv = uvs;
-		_mesh.triangles = tris;
+		mesh.vertices = verts;
+		mesh.tangents = tangents;
+		mesh.uv = uvs;
+		mesh.triangles = tris;
 
 		// Set the amount of the array has been used so it can be zeroed next time it's used.
 		arr.size = segments;
 
-		return _mesh;
+		return mesh;
 	}
 
 	private static float Det2x3(Matrix4x4 m){

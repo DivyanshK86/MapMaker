@@ -151,7 +151,7 @@ public class SFPolygonEditor : SFAbstractEditor {
 				
 					for(int i = 0; i < verts.Count; i++){
 						var handleSize = 0.05f * HandleUtility.GetHandleSize (verts [i]);
-						if(Handles.Button (verts [i], Quaternion.identity, handleSize, handleSize, Handles.DotCap)){
+						if(Handles.Button (verts [i], Quaternion.identity, handleSize, handleSize, Handles.DotHandleCap)){
 							verts.RemoveAt(i);
 							dirty = true;
 							break;
@@ -166,12 +166,12 @@ public class SFPolygonEditor : SFAbstractEditor {
 				// Draw the existing vertexes
 				Handles.color = Color.white;
 				for(int i = 0; i < verts.Count; i++){
-					Handles.DotCap(0, verts [i], Quaternion.identity, s);
+					Handles.DotHandleCap(0, verts [i], Quaternion.identity, s, EventType.Layout);
 				}
 
 				// Draw the insert handle
 				Handles.color = Color.green;
-				if(Handles.Button (insertPosition, Quaternion.identity, s, s, Handles.DotCap)){
+				if(Handles.Button (insertPosition, Quaternion.identity, s, s, Handles.DotHandleCap)){
 					verts.Insert(insertIndex, (Vector2)insertPosition);
 					dirty = true;
 				}
@@ -204,12 +204,12 @@ public class SFPolygonEditor : SFAbstractEditor {
 	}
 	protected Vector2 CircleHandle(Vector3 pos){
 		float size = HandleUtility.GetHandleSize(pos)*0.2f;
-		return Handles.FreeMoveHandle(pos, Quaternion.identity, size, Vector3.zero, Handles.CircleCap);
+		return Handles.FreeMoveHandle(pos, Quaternion.identity, size, Vector3.zero, Handles.CircleHandleCap);
 	}
 
 	protected Vector2 DotHandle(Vector3 pos, float size = 0.05f){
 		float s = HandleUtility.GetHandleSize(pos)*size;
-		return Handles.FreeMoveHandle(pos, Quaternion.identity, s, Vector3.zero, Handles.DotCap);
+		return Handles.FreeMoveHandle(pos, Quaternion.identity, s, Vector3.zero, Handles.DotHandleCap);
 	}
 
 	protected void SetupUndo(string message){
@@ -331,7 +331,7 @@ public class SFSampleEditor : SFAbstractEditor {
 
 	protected Vector2 DotHandle(Vector3 pos, float size = 0.05f){
 		float s = HandleUtility.GetHandleSize(pos)*size;
-		return Handles.FreeMoveHandle(pos, Quaternion.identity, s, Vector3.zero, Handles.DotCap);
+		return Handles.FreeMoveHandle(pos, Quaternion.identity, s, Vector3.zero, Handles.DotHandleCap);
 	}
 
 }

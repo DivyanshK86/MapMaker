@@ -1,9 +1,20 @@
+New in 4.0.3:
+* Fix a matrix multiplication order issue introduced in 4.0.2
+
+New in 4.0.2:
+* Eliminate warnings in Unity 5.6.x
+* Add some profiling information
+
+New in 4.0.1:
+* Updated for Unity 5.6.0.
+* Added colored light cookies. You may need to change your cookie texture import settings.
+
 New in 4.0.0:
 * Perspective Support!
 * Updated for Unity 5.5.0.
 * Precision fix for large lights on mobile.
 * Better detection of renderer texture format on Android.
-* New workagrounds for Unity bugs on Metal.
+* New workarounds for Unity bugs on Metal.
 
 New in 3.1.2:
 * Updated shader so it can be used with tinted and transparent meshes.
